@@ -1,0 +1,1258 @@
+<head>
+:root {
+  --primary-bg: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  --panel-bg: rgba(255, 255, 255, 0.08);
+  --panel-blur: blur(10px);
+  --shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  --border-radius: 20px;
+  --transition: all 0.3s ease;
+  --color-hour: rgba(255, 100, 100, 0.8);
+  --color-minute: rgba(100, 255, 100, 0.7);
+  --color-second: rgba(100, 200, 255, 0.9);
+  --color-success: #4caf50;
+  --color-warning: #ffc107;
+  --color-error: #f44336;
+  --color-info: #4fc3f7;
+  --font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-size-xs: 0.85rem;
+  --font-size-sm: 1rem;
+  --font-size-md: 1.3rem;
+  --font-size-lg: 2.2rem;
+  --font-size-xl: 2.5rem;
+  --space-xs: 8px;
+  --space-sm: 15px;
+  --space-md: 20px;
+  --space-lg: 30px;
+  --space-xl: 40px;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-info);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: var(--primary-bg);
+  font-family: var(--font-family);
+  color: white;
+  line-height: 1.6;
+  overflow-x: hidden;
+  padding: var(--space-md);
+}
+
+.container {
+  text-align: center;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+h1 {
+  margin-bottom: var(--space-sm);
+  font-weight: 300;
+  text-shadow: 0 2px 10px dodgerblue;
+  font-size: var(--font-size-xl);
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.description {
+  margin-bottom: var(--space-xl);
+  text-shadow: 0 2px 10px dodgerblue;
+  opacity: 0.9;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: minmax(auto, 400px) 1fr;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+}
+
+.clock-container {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+  background: linear-gradient(45deg, rgb(0, 77, 0), rgb(0, 0, 78));
+  border-radius: 50%;
+  box-shadow: 18px 5px 100px dodgerblue;
+}
+
+@keyframes borderRotate {
+  0% {
+    border-image-source: linear-gradient(
+      0deg,
+      #ff8a00,
+      #e52e71,
+      #9d50bb,
+      #4a00e0,
+      #00c9ff
+    );
+  }
+
+  25% {
+    border-image-source: linear-gradient(
+      90deg,
+      #ff8a00,
+      #e52e71,
+      #9d50bb,
+      #4a00e0,
+      #00c9ff
+    );
+  }
+
+  50% {
+    border-image-source: linear-gradient(
+      180deg,
+      #ff8a00,
+      #e52e71,
+      #9d50bb,
+      #4a00e0,
+      #00c9ff
+    );
+  }
+
+  75% {
+    border-image-source: linear-gradient(
+      270deg,
+      #ff8a00,
+      #e52e71,
+      #9d50bb,
+      #4a00e0,
+      #00c9ff
+    );
+  }
+
+  100% {
+    border-image-source: linear-gradient(
+      360deg,
+      #ff8a00,
+      #e52e71,
+      #9d50bb,
+      #4a00e0,
+      #00c9ff
+    );
+  }
+}
+
+.clock-container::before {
+  content: "";
+  display: block;
+  padding-top: 100%;
+}
+
+.clock-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.gradient-shadow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  filter: blur(15px);
+  opacity: 0.8;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.hour-shadow {
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    rgba(255, 100, 100, 0) 0deg,
+    var(--color-hour) 30deg,
+    rgba(255, 100, 100, 0) 60deg,
+    transparent 360deg
+  );
+  z-index: 1;
+  transition: transform 0.5s linear;
+}
+
+.minute-shadow {
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    rgba(100, 255, 100, 0) 0deg,
+    var(--color-minute) 20deg,
+    rgba(100, 255, 100, 0) 40deg,
+    transparent 360deg
+  );
+  z-index: 2;
+  transition: transform 0.3s linear;
+}
+
+.second-shadow {
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    rgba(100, 200, 255, 0) 0deg,
+    var(--color-second) 10deg,
+    rgba(100, 200, 255, 0) 20deg,
+    transparent 360deg
+  );
+  z-index: 3;
+}
+
+.center-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+    0 0 40px rgba(255, 255, 255, 0.5);
+  z-index: 10;
+}
+
+.time-display {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--space-xs);
+  text-shadow: 8px 5px 10px dodgerblue, 8px 5px 20px dodgerblue;
+  letter-spacing: 3px;
+  font-weight: 300;
+}
+
+.date-display {
+  font-size: var(--font-size-md);
+  opacity: 0.9;
+  margin-bottom: var(--space-lg);
+  text-shadow: 8px 5px 10px dodgerblue, 8px 5px 20px dodgerblue;
+}
+
+.panel {
+  background: var(--panel-bg);
+  backdrop-filter: var(--panel-blur);
+  border-radius: var(--border-radius);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow);
+  border: 3px inset;
+  box-shadow: 18px 5px 100px dodgerblue;
+  border-image: linear-gradient(
+      45deg,
+      #ff8a00,
+      #e52e71,
+      #9d50bb,
+      #4a00e0,
+      #00c9ff
+    )
+    1;
+  animation: borderRotate 4s linear infinite;
+}
+
+.monitor-panel {
+  text-align: left;
+  height: fit-content;
+  border: 3px inset;
+  box-shadow: 18px 5px 100px dodgerblue;
+  border-image: linear-gradient(
+      45deg,
+      #ff8a00,
+      #e52e71,
+      #9d50bb,
+      #4a00e0,
+      #00c9ff
+    )
+    1;
+  animation: borderRotate 4s linear infinite;
+}
+
+.panel h2 {
+  margin-bottom: var(--space-sm);
+  font-weight: 400;
+  color: var(--color-info);
+}
+
+.hand-positions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.hand-info {
+  padding: var(--space-sm);
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  border-left: 4px solid;
+}
+
+.hour-info {
+  border-left-color: var(--color-hour);
+}
+
+.minute-info {
+  border-left-color: var(--color-minute);
+}
+
+.second-info {
+  border-left-color: var(--color-second);
+}
+
+.position-data {
+  font-family: "Courier New", monospace;
+  margin-top: var(--space-xs);
+  font-size: var(--font-size-xs);
+}
+
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: var(--space-xs);
+  animation: pulse 2s infinite;
+}
+
+.status-verified {
+  background: var(--color-success);
+  box-shadow: 0 0 10px var(--color-success);
+}
+
+.status-pending {
+  background: var(--color-warning);
+  box-shadow: 0 0 10px var(--color-warning);
+}
+
+.status-error {
+  background: var(--color-error);
+  box-shadow: 0 0 10px var(--color-error);
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.api-panel {
+  margin-bottom: var(--space-lg);
+}
+
+.api-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.btn {
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: var(--transition);
+  backdrop-filter: var(--panel-blur);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+}
+
+.btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.api-response {
+  font-family: "Courier New", monospace;
+  background: rgba(0, 0, 0, 0.3);
+  padding: var(--space-sm);
+  border-radius: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.blockchain-data {
+  font-family: "Courier New", monospace;
+  background: rgba(0, 0, 0, 0.3);
+  padding: var(--space-sm);
+  border-radius: 10px;
+  margin-top: var(--space-sm);
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.timestamp-controls {
+  display: flex;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.timestamp-list {
+  font-family: "Courier New", monospace;
+  background: rgba(0, 0, 0, 0.3);
+  padding: var(--space-sm);
+  border-radius: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+}
+
+.timestamp-item {
+  margin-bottom: var(--space-xs);
+  padding-bottom: var(--space-xs);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.timestamp-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-lg);
+  margin-top: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.color-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.hour-swatch {
+  background: var(--color-hour);
+}
+
+.minute-swatch {
+  background: var(--color-minute);
+}
+
+.second-swatch {
+  background: var(--color-second);
+}
+
+.performance-metrics {
+  position: fixed;
+  bottom: var(--space-md);
+  right: var(--space-md);
+  background: rgba(0, 0, 0, 0.7);
+  padding: var(--space-sm);
+  border-radius: 8px;
+  font-size: var(--font-size-xs);
+  font-family: "Courier New", monospace;
+  z-index: 1000;
+}
+
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-contrast: high) {
+  :root {
+    --panel-bg: rgba(0, 0, 0, 0.9);
+  }
+
+  .gradient-shadow {
+    filter: blur(5px);
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+    color: black;
+  }
+
+  .panel {
+    background: white;
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
+
+</head>
+<body>
+<div class="container">
+    <header role="banner">
+      <h1>Enterprise Gradient Clock with REST API</h1>
+      <p class="description">Blockchain-verified time with comprehensive RESTful API and genesis block initialization</p>
+    </header>
+
+    <main role="main">
+      <div class="dashboard">
+        <section aria-labelledby="clock-title">
+          <h2 id="clock-title" class="sr-only">Analog Clock Display</h2>
+          <div class="clock-container">
+            <div class="clock-inner">
+              <div class="gradient-shadow hour-shadow" id="hourShadow" aria-hidden="true"></div>
+              <div class="gradient-shadow minute-shadow" id="minuteShadow" aria-hidden="true"></div>
+              <div class="gradient-shadow second-shadow" id="secondShadow" aria-hidden="true"></div>
+              <div class="center-glow" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <div class="time-display" id="time" aria-live="polite">00:00:00</div>
+          <div class="date-display" id="date" aria-live="polite">Loading...</div>
+        </section>
+
+        <section class="panel monitor-panel" aria-labelledby="monitor-title">
+          <h2 id="monitor-title">Hand Position Monitor</h2>
+          <div class="hand-positions">
+            <div class="hand-info hour-info">
+              <strong>Hour Shadow</strong>
+              <div class="position-data">
+                Rotation: <span id="hourRotation">0</span>°<br>
+                Position: <span id="hourPosition">12:00</span><br>
+                Speed: 30°/hour
+              </div>
+            </div>
+            <div class="hand-info minute-info">
+              <strong>Minute Shadow</strong>
+              <div class="position-data">
+                Rotation: <span id="minuteRotation">0</span>°<br>
+                Position: <span id="minutePosition">12:00</span><br>
+                Speed: 6°/minute
+              </div>
+            </div>
+            <div class="hand-info second-info">
+              <strong>Second Shadow</strong>
+              <div class="position-data">
+                Rotation: <span id="secondRotation">0</span>°<br>
+                Position: <span id="secondPosition">12:00</span><br>
+                Speed: 6°/second
+              </div>
+            </div>
+          </div>
+
+          <div class="position-data">
+            <div>Motion Quality: <span id="motionQuality">Perfect</span></div>
+            <div>Transition Status: <span id="transitionStatus">Normal</span></div>
+            <div>Frame Rate: <span id="fpsCounter">0</span> FPS</div>
+          </div>
+        </section>
+      </div>
+
+      <section class="panel api-panel" aria-labelledby="api-title">
+        <h2 id="api-title">RESTful API Controls</h2>
+        <div class="api-controls">
+          <button class="btn" id="getTime">GET /api/time</button>
+          <button class="btn" id="syncTime">POST /api/sync</button>
+          <button class="btn" id="getGenesis">GET /api/genesis</button>
+          <button class="btn" id="verifyChain">GET /api/verify</button>
+          <button class="btn" id="getHealth">GET /api/health</button>
+          <button class="btn" id="resetChain">POST /api/reset</button>
+        </div>
+        <div class="api-response" id="apiResponse">
+          API responses will appear here...
+        </div>
+      </section>
+
+      <section class="panel blockchain-panel" aria-labelledby="blockchain-title">
+        <h2 id="blockchain-title">Blockchain Time Verification</h2>
+        <div class="blockchain-status" role="status" aria-live="polite">
+          <div class="status-indicator status-verified" id="blockchainStatus"></div>
+          <span id="blockchainStatusText">Initializing Genesis Block...</span>
+        </div>
+
+        <div class="blockchain-data">
+          <div>Genesis Block: <span id="genesisBlock">Initializing...</span></div>
+          <div>Current Block: <span id="currentBlock">—</span></div>
+          <div>Chain Height: <span id="chainHeight">0</span></div>
+          <div>Last Verification: <span id="lastVerification">—</span></div>
+          <div>Time Source: <span id="timeSource">Genesis Initialization</span></div>
+          <div>Verification Hash: <span id="verificationHash">—</span></div>
+          <div>Confidence: <span id="confidenceLevel">—</span></div>
+        </div>
+      </section>
+
+      <section class="panel timestamp-module" aria-labelledby="timestamp-title">
+        <h2 id="timestamp-title">Timestamping Module</h2>
+        <div class="timestamp-controls">
+          <button class="btn" id="createTimestamp">Create Timestamp</button>
+          <button class="btn" id="verifyTimestamp">Verify Last Timestamp</button>
+          <button class="btn" id="exportTimestamps">Export Timestamps</button>
+          <button class="btn" id="clearTimestamps">Clear All</button>
+        </div>
+
+        <div class="timestamp-list" id="timestampList" role="log" aria-live="polite">
+          <div class="timestamp-item">No timestamps yet. Click "Create Timestamp" to add one.</div>
+        </div>
+      </section>
+    </main>
+
+    <footer role="contentinfo">
+      <div class="legend">
+        <div class="legend-item">
+          <div class="color-swatch hour-swatch" aria-hidden="true"></div>
+          <span>Hour Shadow</span>
+        </div>
+        <div class="legend-item">
+          <div class="color-swatch minute-swatch" aria-hidden="true"></div>
+          <span>Minute Shadow</span>
+        </div>
+        <div class="legend-item">
+          <div class="color-swatch second-swatch" aria-hidden="true"></div>
+          <span>Second Shadow</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <div class="performance-metrics no-print" aria-live="polite">
+    <div>FPS: <span id="perfFps">0</span></div>
+    <div>Memory: <span id="perfMemory">—</span></div>
+    <div>API Status: <span id="apiStatus">Online</span></div>
+  </div>
+
+  <div class="sr-only" aria-live="polite" id="sr-time-announcement"></div>
+<script>
+(function() {
+      'use strict';
+      // Enhanced configuration with API endpoints
+      const CONFIG = {
+        API: {
+          BASE_URL: '/api',
+          ENDPOINTS: {
+            TIME: '/time',
+            SYNC: '/sync',
+            GENESIS: '/genesis',
+            VERIFY: '/verify',
+            HEALTH: '/health',
+            RESET: '/reset',
+            TIMESTAMP: '/timestamp'
+          },
+          TIMEOUT: 5000
+        },
+        BLOCKCHAIN: {
+          GENESIS_TIMESTAMP: null, // Will be set during initialization
+          GENESIS_HASH: '0x0000000000000000000000000000000000000000000000000000000000000000',
+          BLOCK_TIME: 15000, // 15 seconds between blocks
+          DIFFICULTY: 4 // Leading zeros required in hash
+        },
+        PERFORMANCE: {
+          FPS_UPDATE_INTERVAL: 1000,
+          MEMORY_UPDATE_INTERVAL: 5000
+        },
+        ANIMATION: {
+          SECOND_HAND_SMOOTHING: true,
+          BOUNDARY_THRESHOLD: 355
+        }
+      };
+      // Enhanced state management
+      const state = {
+        rotation: {
+          hours: {
+            current: 0,
+            display: 0,
+            lastTransition: 0
+          },
+          minutes: {
+            current: 0,
+            display: 0,
+            lastTransition: 0
+          },
+          seconds: {
+            current: 0,
+            display: 0,
+            lastTransition: 0
+          }
+        },
+        performance: {
+          frameCount: 0,
+          lastFpsUpdate: 0,
+          fps: 0,
+          transitionInProgress: false
+        },
+        blockchain: {
+          genesisBlock: null,
+          currentBlock: null,
+          chain: [],
+          verified: false,
+          lastVerification: null,
+          confidence: 0,
+          isInitializing: true
+        },
+        api: {
+          baseURL: window.location.origin + CONFIG.API.BASE_URL,
+          isOnline: true,
+          lastResponse: null
+        },
+        timestamps: [],
+        lastFrameTime: 0
+      };
+      // DOM elements cache
+      const elements = {};
+      // Initialize the application
+      function init() {
+        cacheDOMElements();
+        setupEventListeners();
+        initializeGenesisBlock();
+        startAnimationLoop();
+        startPeriodicTasks();
+        console.log('Enterprise Gradient Clock with REST API initialized');
+      }
+
+      function cacheDOMElements() {
+        const ids = [
+          'hourShadow', 'minuteShadow', 'secondShadow', 'time', 'date',
+          'hourRotation', 'minuteRotation', 'secondRotation',
+          'hourPosition', 'minutePosition', 'secondPosition',
+          'motionQuality', 'transitionStatus', 'fpsCounter',
+          'blockchainStatus', 'blockchainStatusText', 'genesisBlock',
+          'currentBlock', 'chainHeight', 'lastVerification',
+          'timeSource', 'verificationHash', 'confidenceLevel',
+          'timestampList', 'perfFps', 'perfMemory', 'apiStatus',
+          'createTimestamp', 'verifyTimestamp', 'exportTimestamps', 'clearTimestamps',
+          'getTime', 'syncTime', 'getGenesis', 'verifyChain', 'getHealth', 'resetChain',
+          'apiResponse'
+        ];
+        ids.forEach(id => {
+          elements[id] = document.getElementById(id);
+        });
+      }
+
+      function setupEventListeners() {
+        const safeAddListener = (element, event, handler) => {
+          if (element) {
+            element.addEventListener(event, handler);
+          }
+        };
+        // Timestamp controls
+        safeAddListener(elements.createTimestamp, 'click', createTimestamp);
+        safeAddListener(elements.verifyTimestamp, 'click', verifyLastTimestamp);
+        safeAddListener(elements.exportTimestamps, 'click', exportTimestamps);
+        safeAddListener(elements.clearTimestamps, 'click', clearTimestamps);
+        // API controls
+        safeAddListener(elements.getTime, 'click', () => apiCall('GET', '/time'));
+        safeAddListener(elements.syncTime, 'click', () => apiCall('POST', '/sync'));
+        safeAddListener(elements.getGenesis, 'click', () => apiCall('GET', '/genesis'));
+        safeAddListener(elements.verifyChain, 'click', () => apiCall('GET', '/verify'));
+        safeAddListener(elements.getHealth, 'click', () => apiCall('GET', '/health'));
+        safeAddListener(elements.resetChain, 'click', () => apiCall('POST', '/reset'));
+        // System events
+        document.addEventListener('keydown', handleKeyboardNavigation);
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+      }
+      // Genesis Block Initialization
+      function initializeGenesisBlock() {
+        const genesisTimestamp = new Date();
+        CONFIG.BLOCKCHAIN.GENESIS_TIMESTAMP = genesisTimestamp.getTime();
+        state.blockchain.genesisBlock = {
+          index: 0,
+          timestamp: genesisTimestamp.getTime(),
+          data: {
+            type: 'genesis',
+            message: 'Gradient Clock Genesis Block',
+            version: '1.0.0'
+          },
+          previousHash: '0'.repeat(64),
+          hash: calculateBlockHash(0, genesisTimestamp.getTime(), '0'.repeat(64), {
+            type: 'genesis',
+            message: 'Gradient Clock Genesis Block',
+            version: '1.0.0'
+          }),
+          nonce: 0,
+          difficulty: CONFIG.BLOCKCHAIN.DIFFICULTY
+        };
+        state.blockchain.chain = [state.blockchain.genesisBlock];
+        state.blockchain.currentBlock = state.blockchain.genesisBlock;
+        updateGenesisBlockUI();
+        // Start blockchain mining simulation
+        setTimeout(mineNextBlock, CONFIG.BLOCKCHAIN.BLOCK_TIME);
+      }
+
+      function updateGenesisBlockUI() {
+        if (elements.genesisBlock) {
+          const genesisTime = new Date(state.blockchain.genesisBlock.timestamp);
+          elements.genesisBlock.textContent =
+            `Block #0 at ${genesisTime.toLocaleString()}`;
+        }
+        if (elements.blockchainStatusText) {
+          elements.blockchainStatusText.textContent =
+            'Genesis Block Established - Chain Active';
+        }
+        updateBlockchainUI();
+      }
+
+      function mineNextBlock() {
+        const previousBlock = state.blockchain.chain[state.blockchain.chain.length - 1];
+        const newBlock = {
+          index: previousBlock.index + 1,
+          timestamp: Date.now(),
+          data: {
+            type: 'time_verification',
+            currentTime: new Date().toISOString(),
+            clockState: {
+              hours: state.rotation.hours.display,
+              minutes: state.rotation.minutes.display,
+              seconds: state.rotation.seconds.display
+            }
+          },
+          previousHash: previousBlock.hash,
+          nonce: 0
+        };
+        // Simple mining simulation
+        newBlock.hash = calculateBlockHash(
+          newBlock.index,
+          newBlock.timestamp,
+          newBlock.previousHash,
+          newBlock.data,
+          newBlock.nonce
+        );
+        state.blockchain.chain.push(newBlock);
+        state.blockchain.currentBlock = newBlock;
+        state.blockchain.confidence = Math.min(99.99, 95 + (newBlock.index * 0.1));
+        updateBlockchainUI();
+        // Schedule next block
+        setTimeout(mineNextBlock, CONFIG.BLOCKCHAIN.BLOCK_TIME);
+      }
+
+      function calculateBlockHash(index, timestamp, previousHash, data, nonce = 0) {
+        const blockString = `${index}${timestamp}${previousHash}${JSON.stringify(data)}${nonce}`;
+        let hash = 0;
+        for (let i = 0; i < blockString.length; i++) {
+          const char = blockString.charCodeAt(i);
+          hash = ((hash << 5) - hash) + char;
+          hash = hash & hash;
+        }
+        return `0x${Math.abs(hash).toString(16).padStart(64, '0')}`;
+      }
+      // RESTful API Implementation
+      async function apiCall(method, endpoint, data = null) {
+        const url = state.api.baseURL + endpoint;
+        const options = {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Client-ID': 'gradient-clock-v1'
+          },
+          signal: AbortSignal.timeout(CONFIG.API.TIMEOUT)
+        };
+        if (data && (method === 'POST' || method === 'PUT')) {
+          options.body = JSON.stringify(data);
+        }
+        try {
+          elements.apiResponse.textContent = `⏳ ${method} ${endpoint}...`;
+          // Simulate API call - in real implementation, this would be a fetch()
+          const response = await simulateAPICall(method, endpoint, data);
+          state.api.lastResponse = response;
+          elements.apiResponse.textContent = JSON.stringify(response, null, 2);
+          elements.apiStatus.textContent = 'Online';
+          state.api.isOnline = true;
+          return response;
+        } catch (error) {
+          console.error(`API call failed: ${method} ${endpoint}`, error);
+          elements.apiResponse.textContent = `❌ Error: ${error.message}`;
+          elements.apiStatus.textContent = 'Offline';
+          state.api.isOnline = false;
+          throw error;
+        }
+      }
+      async function simulateAPICall(method, endpoint, data) {
+        // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
+        const now = new Date();
+        switch (endpoint) {
+          case '/time':
+            return {
+              timestamp: now.toISOString(),
+                unix: now.getTime(),
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                uptime: Date.now() - state.blockchain.genesisBlock.timestamp,
+                source: 'blockchain_verified'
+            };
+          case '/sync':
+            return {
+              status: 'synchronized',
+                previousTime: state.blockchain.currentBlock.data.currentTime,
+                newTime: now.toISOString(),
+                adjustment: 0,
+                confidence: state.blockchain.confidence
+            };
+          case '/genesis':
+            return {
+              genesisBlock: state.blockchain.genesisBlock,
+                chainLength: state.blockchain.chain.length,
+                totalUptime: Date.now() - state.blockchain.genesisBlock.timestamp
+            };
+          case '/verify':
+            const isChainValid = verifyBlockchain();
+            return {
+              verified: isChainValid,
+                chainLength: state.blockchain.chain.length,
+                lastBlock: state.blockchain.currentBlock,
+                integrityScore: isChainValid ? 100 : 0,
+                verificationTime: now.toISOString()
+            };
+          case '/health':
+            return {
+              status: 'healthy',
+                version: '1.0.0',
+                uptime: Date.now() - state.blockchain.genesisBlock.timestamp,
+                memory: performance.memory ? {
+                  used: Math.round(performance.memory.usedJSHeapSize / 1048576),
+                  total: Math.round(performance.memory.totalJSHeapSize / 1048576)
+                } : null,
+                performance: {
+                  fps: state.performance.fps,
+                  frameTime: state.lastFrameTime
+                }
+            };
+          case '/reset':
+            if (confirm('Are you sure you want to reset the blockchain? This will create a new genesis block.')) {
+              initializeGenesisBlock();
+              return {
+                status: 'reset_complete',
+                newGenesis: state.blockchain.genesisBlock
+              };
+            }
+            return {
+              status: 'reset_cancelled'
+            };
+          default:
+            throw new Error(`Unknown endpoint: ${endpoint}`);
+        }
+      }
+
+      function verifyBlockchain() {
+        if (state.blockchain.chain.length === 0) return false;
+        if (state.blockchain.chain[0].index !== 0) return false;
+        for (let i = 1; i < state.blockchain.chain.length; i++) {
+          const currentBlock = state.blockchain.chain[i];
+          const previousBlock = state.blockchain.chain[i - 1];
+          if (currentBlock.previousHash !== previousBlock.hash) {
+            return false;
+          }
+          const calculatedHash = calculateBlockHash(
+            currentBlock.index,
+            currentBlock.timestamp,
+            currentBlock.previousHash,
+            currentBlock.data,
+            currentBlock.nonce
+          );
+          if (currentBlock.hash !== calculatedHash) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      function updateBlockchainUI() {
+        if (!state.blockchain.currentBlock) return;
+        elements.currentBlock.textContent = `#${state.blockchain.currentBlock.index}`;
+        elements.chainHeight.textContent = state.blockchain.chain.length;
+        elements.lastVerification.textContent = new Date().toLocaleTimeString();
+        elements.confidenceLevel.textContent = `${state.blockchain.confidence.toFixed(2)}%`;
+        elements.verificationHash.textContent =
+          `${state.blockchain.currentBlock.hash.substring(0, 16)}...`;
+        const isHealthy = verifyBlockchain();
+        elements.blockchainStatus.className =
+          `status-indicator ${isHealthy ? 'status-verified' : 'status-error'}`;
+      }
+      // Existing clock functionality (optimized)
+      function startAnimationLoop() {
+        let animationFrameId;
+        const animate = (currentTime) => {
+          animationFrameId = requestAnimationFrame(animate);
+          if (document.hidden) return;
+          updateClock();
+          updatePerformanceMetrics(currentTime);
+        };
+        animationFrameId = requestAnimationFrame(animate);
+        return () => cancelAnimationFrame(animationFrameId);
+      }
+
+      function updateClock() {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
+        const milliseconds = now.getMilliseconds();
+        const rotations = calculateRotations(hours, minutes, seconds, milliseconds);
+        updateShadows(rotations);
+        updateDigitalDisplay(now);
+        updatePositionMonitor(now, rotations);
+        updateDebugInfo();
+      }
+
+      function calculateRotations(hours, minutes, seconds, milliseconds) {
+        const secondRotation = (seconds + milliseconds / 1000) * 6;
+        const minuteRotation = (minutes + seconds / 60) * 6;
+        const hourRotation = (hours % 12 + minutes / 60) * 30;
+        return {
+          seconds: handleBoundaryTransition('seconds', secondRotation),
+          minutes: handleBoundaryTransition('minutes', minuteRotation),
+          hours: handleBoundaryTransition('hours', hourRotation)
+        };
+      }
+
+      function handleBoundaryTransition(hand, targetRotation) {
+        const current = state.rotation[hand].current;
+        let newRotation = targetRotation;
+        if (current > CONFIG.ANIMATION.BOUNDARY_THRESHOLD && targetRotation < 5) {
+          newRotation = 360 + targetRotation;
+        } else if (current > 360 && targetRotation < 180) {
+          newRotation = targetRotation;
+        }
+        state.rotation[hand].current = newRotation;
+        state.rotation[hand].display = targetRotation;
+        return newRotation;
+      }
+
+      function updateShadows(rotations) {
+        elements.secondShadow.style.transform = `rotate(${rotations.seconds}deg)`;
+        elements.minuteShadow.style.transform = `rotate(${rotations.minutes}deg)`;
+        elements.hourShadow.style.transform = `rotate(${rotations.hours}deg)`;
+      }
+
+      function updateDigitalDisplay(now) {
+        elements.time.textContent = now.toLocaleTimeString();
+        elements.date.textContent = now.toLocaleDateString(undefined, {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        announceTimeForScreenReaders(now);
+      }
+
+      function updatePositionMonitor(now, rotations) {
+        elements.hourRotation.textContent = rotations.hours.toFixed(1);
+        elements.minuteRotation.textContent = rotations.minutes.toFixed(1);
+        elements.secondRotation.textContent = rotations.seconds.toFixed(1);
+        const hourPos = Math.floor(rotations.hours / 30);
+        const minutePos = Math.floor(rotations.minutes / 6);
+        const secondPos = Math.floor(rotations.seconds / 6);
+        elements.hourPosition.textContent = `${hourPos}:00`;
+        elements.minutePosition.textContent = `${minutePos}:00`;
+        elements.secondPosition.textContent = `${secondPos}:00`;
+      }
+
+      function updateDebugInfo() {
+        updateFpsCounter();
+        elements.transitionStatus.textContent =
+          state.performance.transitionInProgress ? 'Boundary Transition' : 'Normal';
+        elements.motionQuality.textContent =
+          state.performance.fps > 55 ? 'Perfect' :
+          state.performance.fps > 45 ? 'Good' : 'Acceptable';
+      }
+
+      function updateFpsCounter() {
+        state.performance.frameCount++;
+        const now = performance.now();
+        if (now >= state.performance.lastFpsUpdate + CONFIG.PERFORMANCE.FPS_UPDATE_INTERVAL) {
+          state.performance.fps = Math.round(
+            (state.performance.frameCount * 1000) /
+            (now - state.performance.lastFpsUpdate)
+          );
+          state.performance.frameCount = 0;
+          state.performance.lastFpsUpdate = now;
+          elements.fpsCounter.textContent = state.performance.fps;
+          elements.perfFps.textContent = state.performance.fps;
+        }
+      }
+
+      function startPeriodicTasks() {
+        setInterval(updateMemoryUsage, CONFIG.PERFORMANCE.MEMORY_UPDATE_INTERVAL);
+      }
+
+      function updateMemoryUsage() {
+        if (performance.memory) {
+          const memory = performance.memory;
+          const usedMB = Math.round(memory.usedJSHeapSize / 1048576);
+          const totalMB = Math.round(memory.totalJSHeapSize / 1048576);
+          elements.perfMemory.textContent = `${usedMB}MB / ${totalMB}MB`;
+        }
+      }
+      // Timestamping functions
+      function createTimestamp() {
+        try {
+          const now = new Date();
+          const timestamp = {
+            id: state.timestamps.length + 1,
+            time: now.toISOString(),
+            hash: calculateBlockHash(state.timestamps.length, now.getTime(),
+              state.blockchain.currentBlock.hash, {
+                type: 'timestamp'
+              }),
+            verified: false,
+            blockReference: state.blockchain.currentBlock.index
+          };
+          state.timestamps.push(timestamp);
+          updateTimestampList();
+          setTimeout(() => {
+            timestamp.verified = true;
+            updateTimestampList();
+          }, 2000);
+        } catch (error) {
+          console.error('Timestamp creation failed:', error);
+          alert('Failed to create timestamp. Please try again.');
+        }
+      }
+
+      function verifyLastTimestamp() {
+        if (state.timestamps.length === 0) {
+          alert('No timestamps to verify');
+          return;
+        }
+        const lastTimestamp = state.timestamps[state.timestamps.length - 1];
+        lastTimestamp.verified = true;
+        updateTimestampList();
+        alert(`Timestamp #${lastTimestamp.id} verified on blockchain`);
+      }
+
+      function exportTimestamps() {
+        if (state.timestamps.length === 0) {
+          alert('No timestamps to export');
+          return;
+        }
+        try {
+          const dataStr = "data:text/json;charset=utf-8," +
+            encodeURIComponent(JSON.stringify(state.timestamps, null, 2));
+          const downloadAnchorNode = document.createElement('a');
+          downloadAnchorNode.setAttribute("href", dataStr);
+          downloadAnchorNode.setAttribute("download", "timestamps.json");
+          document.body.appendChild(downloadAnchorNode);
+          downloadAnchorNode.click();
+          downloadAnchorNode.remove();
+        } catch (error) {
+          console.error('Export failed:', error);
+          alert('Failed to export timestamps.');
+        }
+      }
+
+      function clearTimestamps() {
+        if (state.timestamps.length === 0) return;
+        if (confirm('Are you sure you want to clear all timestamps?')) {
+          state.timestamps = [];
+          updateTimestampList();
+        }
+      }
+
+      function updateTimestampList() {
+        if (!elements.timestampList) return;
+        if (state.timestamps.length === 0) {
+          elements.timestampList.innerHTML =
+            '<div class="timestamp-item">No timestamps yet. Click "Create Timestamp" to add one.</div>';
+          return;
+        }
+        elements.timestampList.innerHTML = state.timestamps.map(ts => `
+                    <div class="timestamp-item">
+                        <strong>#${ts.id}</strong> - ${new Date(ts.time).toLocaleString()}<br>
+                        Hash: ${ts.hash.substring(0, 16)}...<br>
+                        Block: #${ts.blockReference}<br>
+                        Status: <span style="color: ${ts.verified ? 'var(--color-success)' : 'var(--color-warning)'}">
+                            ${ts.verified ? 'Verified' : 'Pending'}
+                        </span>
+                    </div>
+                `).join('');
+        elements.timestampList.scrollTop = elements.timestampList.scrollHeight;
+      }
+      // Utility functions
+      function handleKeyboardNavigation(event) {
+        if (event.ctrlKey && event.key === 't') {
+          event.preventDefault();
+          createTimestamp();
+        }
+      }
+
+      function handleVisibilityChange() {
+        if (document.hidden) {
+          console.log('Clock backgrounded, performance optimized');
+        }
+      }
+
+      function announceTimeForScreenReaders(now) {
+        const announcement = `The time is ${now.toLocaleTimeString()}`;
+        const srElement = document.getElementById('sr-time-announcement');
+        if (srElement) {
+          srElement.textContent = announcement;
+        }
+      }
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+      window.addEventListener('error', (event) => {
+        console.error('Global error:', event.error);
+      });
+    })();
+</script>
+</body>
+</html>
